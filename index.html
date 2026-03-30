@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leabhar Branach — MS1288</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: Georgia, serif;
+            background: #1a1a1a;
+            color: #e0d8c8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            margin: 1rem 0 0.25rem;
+            font-size: 1.5rem;
+            font-weight: normal;
+            letter-spacing: 0.05em;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 0.75rem 0;
+        }
+
+        button {
+            background: #2a2a2a;
+            color: #e0d8c8;
+            border: 1px solid #444;
+            padding: 0.5rem 1.25rem;
+            font-family: Georgia, serif;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+
+        button:hover:not(:disabled) { background: #3a3a3a; }
+        button:disabled { opacity: 0.3; cursor: default; }
+
+        .page-input {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.95rem;
+        }
+
+        .page-input input {
+            width: 3rem;
+            text-align: center;
+            background: #2a2a2a;
+            color: #e0d8c8;
+            border: 1px solid #444;
+            padding: 0.4rem;
+            font-family: Georgia, serif;
+            font-size: 0.95rem;
+            border-radius: 4px;
+        }
+
+        .viewer {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            width: 100%;
+        }
+
+        .viewer img {
+            max-width: 95vw;
+            max-height: 80vh;
+            object-fit: contain;
+            border: 1px solid #333;
+        }
+        footer {
+            margin-top: auto;
+            padding: 0.75rem;
+            font-size: 0.8rem;
+            color: #888;
+            text-align: center;
+        }
+
+        footer a { color: #aaa; }
+    </style>
+</head>
+<body>
+    <h1>Leabhar Branach</h1>
+
+    <div class="controls">
+        <button id="prev" onclick="go(-1)">&#8592; Previous</button>
+        <div class="page-input">
+            <label for="pageNum">Page</label>
+            <input id="pageNum" type="text" value="1">
+            <span>of <span id="total"></span></span>
+        </div>
+        <button id="next" onclick="go(1)">Next &#8594;</button>
+    </div>
+
+    <div class="viewer">
+        <img id="page" alt="Manuscript page">
+    </div>
+
+    <footer>
+        Images licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+        Credit: The Board of Trinity College Dublin.
+    </footer>
+
+    <script>
+        const TOTAL = 39;
+        let current = 1;
+
+        const img = document.getElementById('page');
+        const input = document.getElementById('pageNum');
+        const prevBtn = document.getElementById('prev');
+        const nextBtn = document.getElementById('next');
+
+        document.getElementById('total').textContent = TOTAL;
+
+        function padNum(n) {
+            return String(n).padStart(3, '0');
+        }
+
+        function show(page) {
+            current = Math.max(1, Math.min(TOTAL, page));
+            img.src = `jpeg_web/MS1288_${padNum(current)}_8Bit.jpeg`;
+            img.alt = `MS1288 page ${current}`;
+            input.value = current;
+            prevBtn.disabled = current === 1;
+            nextBtn.disabled = current === TOTAL;
+        }
+
+        function go(delta) {
+            show(current + delta);
+        }
+
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                const n = parseInt(this.value, 10);
+                if (!isNaN(n)) show(n);
+            }
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.target === input) return;
+            if (e.key === 'ArrowLeft') go(-1);
+            if (e.key === 'ArrowRight') go(1);
+        });
+
+        show(1);
+    </script>
+</body>
+</html>
