@@ -1,2 +1,6 @@
 source-jpeg/
 .DS_Store
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
